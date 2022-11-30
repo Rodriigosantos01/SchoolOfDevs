@@ -64,6 +64,8 @@ namespace SchollOfDevs.Services
             if (noteDb is null)
                 throw new Exception($"Note {id} not found");
 
+            noteIn.CreateAt = noteDb.CreateAt;
+
             _context.Entry(noteIn).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }

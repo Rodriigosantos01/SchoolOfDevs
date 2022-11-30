@@ -71,6 +71,8 @@ namespace SchollOfDevs.Services
             if (userDb is null)
                 throw new Exception($"UserName {id} not found");
 
+            userIn.CreateAt = userDb.CreateAt;
+
             _context.Entry(userIn).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }

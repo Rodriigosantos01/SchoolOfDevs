@@ -64,6 +64,8 @@ namespace SchollOfDevs.Services
             if (courseDb is null)
                 throw new Exception($"CourseName {id} not found");
 
+            courseIn.CreateAt = courseDb.CreateAt;
+
             _context.Entry(courseIn).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
