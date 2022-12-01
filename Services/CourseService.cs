@@ -34,7 +34,7 @@ namespace SchollOfDevs.Services
             Course courseDb = await _context.Courses.SingleOrDefaultAsync(u => u.Id == id);
 
             if (courseDb is null)
-                throw new Exception($"CourseName {id} not found");
+                throw new KeyNotFoundException($"CourseName {id} not found");
 
             _context.Courses.Remove(courseDb);
             await _context.SaveChangesAsync();
@@ -47,7 +47,7 @@ namespace SchollOfDevs.Services
             Course courseDb = await _context.Courses.SingleOrDefaultAsync(u => u.Id == id);
 
             if (courseDb is null)
-                throw new Exception($"CourseName {id} not found");
+                throw new KeyNotFoundException($"CourseName {id} not found");
 
             return courseDb;
         }
@@ -55,14 +55,14 @@ namespace SchollOfDevs.Services
         public async Task Update(Course courseIn, int id)
         {
             if(courseIn.Id != id)
-                throw new Exception("Route id differs Course id");
+                throw new BadHttpRequestException("Route id differs Course id");
 
             Course courseDb = await _context.Courses
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id);
 
             if (courseDb is null)
-                throw new Exception($"CourseName {id} not found");
+                throw new KeyNotFoundException($"CourseName {id} not found");
 
             courseIn.CreateAt = courseDb.CreateAt;
 
