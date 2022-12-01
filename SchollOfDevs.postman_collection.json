@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"age\": 27,\r\n    \"userName\": \"Rodrigo1234\",\r\n    \"password\": \"Rodrigo123\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"age\": 27,\r\n    \"userName\": \"Rodrigo1234\",\r\n    \"password\": \"Rodrigo123\",\r\n    \"ConfirmPassword\": \"Rodrigo123\",\r\n    \"CurrentPassword\": \"ASD\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
