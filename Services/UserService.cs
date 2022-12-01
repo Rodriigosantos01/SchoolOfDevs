@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SchollOfDevs.Entities;
 using SchollOfDevs.Helpers;
+using BC = BCrypt.Net.BCrypt;
 
 namespace SchollOfDevs.Services
 {
@@ -23,12 +25,17 @@ namespace SchollOfDevs.Services
         }
         public async Task<User> Create(User user)
         {
+            if(!user.Password.Equals(user.ConfirmPassword))
+                throw new Exception("Password does not match ConfirmPassword");
+
             User userDb = await _context.Users
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.UserName == user.UserName);
 
-            if (userDb is not null)
+            if (userDb is null)
                 throw new Exception($"UserName {user.UserName} already exist.");
+
+            user.Password = BC.HashPassword(user.Password);
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -64,14 +71,20 @@ namespace SchollOfDevs.Services
             if(userIn.Id != id)
                 throw new Exception("Route id differs User id");
 
+            else if (!userIn.Password.Equals(userIn.ConfirmPassword))
+                throw new Exception("Password does not match ConfirmPassword");
+
             User userDb = await _context.Users
                 .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id);
 
             if (userDb is null)
                 throw new Exception($"UserName {id} not found");
+            else if (!BC.Verify(userIn.CurrentPassword, userDb.Password))
+                throw new Exception("Incorrect Password");
 
             userIn.CreateAt = userDb.CreateAt;
+            userIn.Password = BC.HashPassword(userDb.Password);
 
             _context.Entry(userIn).State = EntityState.Modified;
             await _context.SaveChangesAsync();
