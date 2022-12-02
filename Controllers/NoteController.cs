@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchollOfDevs.Entities;
+using SchollOfDevs.Dto.Note;
 using SchollOfDevs.Services;
 
 namespace SchollOfDevs.Controllers
@@ -16,7 +16,7 @@ namespace SchollOfDevs.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Note note) => Ok(await _service.Create(note));
+        public async Task<IActionResult> Create([FromBody] NoteRequest note) => Ok(await _service.Create(note));
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAll());
@@ -25,7 +25,7 @@ namespace SchollOfDevs.Controllers
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetById(id));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] Note noteIn, int id)
+        public async Task<IActionResult> Update([FromBody] NoteRequest noteIn, int id)
         {
             await _service.Update(noteIn, id);
             return NoContent();

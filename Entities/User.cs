@@ -16,6 +16,7 @@ namespace SchollOfDevs.Entities
         public string CurrentPassword { get; set; }
         public int Age { get; set; }
         public TypeUser TypeUser { get; set; }
+        [JsonIgnore]
         public ICollection<Course> CoursesTeaching { get; set; }
         [JsonIgnore]
         public ICollection<Course> CoursesStuding { get; set; }

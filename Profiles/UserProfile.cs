@@ -11,6 +11,10 @@ namespace SchollOfDevs.Profiles
             CreateMap<User, UserRequest>();
             CreateMap<User, UserResponse>();
             CreateMap<User, UserRequestUpdate>();
+
+            CreateMap<UserRequest, User>();
+            CreateMap<UserResponse, User>();
+            CreateMap<UserRequestUpdate, User>();
         }
     }
 }

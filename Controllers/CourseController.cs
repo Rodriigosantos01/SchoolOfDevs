@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SchollOfDevs.Entities;
+using SchollOfDevs.Dto.Course;
 using SchollOfDevs.Services;
 
 namespace SchollOfDevs.Controllers
@@ -16,7 +16,7 @@ namespace SchollOfDevs.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Course course) => Ok(await _service.Create(course));
+        public async Task<IActionResult> Create([FromBody] CourseRequest course) => Ok(await _service.Create(course));
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _service.GetAll());
@@ -25,7 +25,7 @@ namespace SchollOfDevs.Controllers
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetById(id));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] Course courseIn, int id)
+        public async Task<IActionResult> Update([FromBody] CourseRequest courseIn, int id)
         {
             await _service.Update(courseIn, id);
             return NoContent();

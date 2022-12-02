@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SchollOfDevs.Dto.Course;
 using SchollOfDevs.Entities;
 using SchollOfDevs.Helpers;
 
@@ -6,27 +8,30 @@ namespace SchollOfDevs.Services
 {
     public interface ICourseService
     {
-        public Task<Course> Create(Course course);
-        public Task<Course> GetById(int id);
-        public Task<List<Course>> GetAll();
-        public Task Update(Course courseIn, int id);
+        public Task<CourseResponse> Create(CourseRequest course);
+        public Task<CourseResponse> GetById(int id);
+        public Task<List<CourseResponse>> GetAll();
+        public Task Update(CourseRequest courseIn, int id);
         public Task Delete(int id);
 
     }
     public class CourseService : ICourseService
     {
         private readonly DataContext _context;
+        private readonly IMapper _mapper;
 
-        public CourseService(DataContext context)
+        public CourseService(DataContext context, IMapper mapper)
         {   
-               _context = context;
+            _context = context;
+            _mapper = mapper;
         }
-        public async Task<Course> Create(Course course)
+        public async Task<CourseResponse> Create(CourseRequest courseRequest)
         {
+            Course course = _mapper.Map<Course>(courseRequest);
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
-            return course;
+            return _mapper.Map<CourseResponse>(course);
         }
 
         public async Task Delete(int id)
@@ -40,21 +45,28 @@ namespace SchollOfDevs.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Course>> GetAll() => await _context.Courses.ToListAsync();
-
-        public async Task<Course> GetById(int id)
+        public async Task<List<CourseResponse>> GetAll()
         {
-            Course courseDb = await _context.Courses.SingleOrDefaultAsync(u => u.Id == id);
+            List<Course> courses = await _context.Courses.ToListAsync();
+
+            return courses.Select(c => _mapper.Map<CourseResponse>(c)).ToList();
+        }
+
+        public async Task<CourseResponse> GetById(int id)
+        {
+            Course courseDb = await _context.Courses
+                .Include(c => c.Teacher)
+                .SingleOrDefaultAsync(u => u.Id == id);
 
             if (courseDb is null)
                 throw new KeyNotFoundException($"CourseName {id} not found");
 
-            return courseDb;
+            return _mapper.Map<CourseResponse>(courseDb);
         }
 
-        public async Task Update(Course courseIn, int id)
+        public async Task Update(CourseRequest courseRequest, int id)
         {
-            if(courseIn.Id != id)
+            if(courseRequest.Id != id)
                 throw new BadHttpRequestException("Route id differs Course id");
 
             Course courseDb = await _context.Courses
@@ -64,9 +76,9 @@ namespace SchollOfDevs.Services
             if (courseDb is null)
                 throw new KeyNotFoundException($"CourseName {id} not found");
 
-            courseIn.CreateAt = courseDb.CreateAt;
+            courseDb = _mapper.Map<Course>(courseRequest);
 
-            _context.Entry(courseIn).State = EntityState.Modified;
+            _context.Entry(courseDb).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
     }
