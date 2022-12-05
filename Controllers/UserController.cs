@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchollOfDevs.Dto.User;
 using SchollOfDevs.Services;
+using SchoolOfDevs.Authorization;
 
 namespace SchollOfDevs.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -14,7 +16,10 @@ namespace SchollOfDevs.Controllers
         {
             _service = service;
         }
-
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest request) => Ok(await _service.Authenticate(request));
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserRequest user) => Ok(await _service.Create(user));
 

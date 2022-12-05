@@ -16,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"age\": 27,\r\n    \"userName\": \"Rodrigo1234\",\r\n    \"password\": \"Rodrigo123\",\r\n    \"ConfirmPassword\": \"Rodrigo123\",\r\n    \"CurrentPassword\": \"ASD\"\r\n}",
+							"raw": "{\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"age\": 27,\r\n    \"userName\": \"RodrigoStudent\",\r\n    \"Password\": \"123\",\r\n    \"ConfirmPassword\": \"123\",\r\n    \"typeuser\": 0,\r\n    \"CoursesStudingIds\": [1,2]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -43,7 +43,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"userName\": \"Rodrigo1234\",\r\n    \"password\": \"000000\",\r\n    \"age\": 27,\r\n    \"typeUser\": 0,\r\n    \"Id\": 2\r\n}",
+							"raw": "{\r\n    \"id\": 2,\r\n    \"firstName\": \"Rodrigo\",\r\n    \"lastName\": \"Santos\",\r\n    \"age\": 27,\r\n    \"userName\": \"RodrigoStudent\",\r\n    \"Password\": \"123\",\r\n    \"CurrentPassword\": \"123\",\r\n    \"ConfirmPassword\": \"123\",\r\n    \"typeuser\": 0,\r\n    \"CoursesStudingIds\": [1]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -51,14 +51,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/api/user/2",
+							"raw": "{{url}}/api/user/4",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
 								"user",
-								"2"
+								"4"
 							]
 						}
 					},
@@ -88,14 +88,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url}}/api/user/2",
+							"raw": "{{url}}/api/user/1",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"api",
 								"user",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -248,7 +248,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Aprenda .NET 6\",\r\n    \"price\": 6.1\r\n}",
+							"raw": "{\r\n    \"teacherId\": 1,\r\n    \"name\": \"Aprenda Flutter\",\r\n    \"price\": 100\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -263,34 +263,6 @@
 							"path": [
 								"api",
 								"course"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Aprenda .NET 6\",\r\n    \"price\": 6,\r\n    \"id\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/api/course/1",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"api",
-								"course",
-								"1"
 							]
 						}
 					},
@@ -319,6 +291,34 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{url}}/api/course/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"course",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Aprenda .NET 6\",\r\n    \"price\": 6,\r\n    \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{url}}/api/course/1",
 							"host": [

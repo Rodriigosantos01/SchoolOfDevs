@@ -2,7 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using SchollOfDevs.Dto.User;
 using SchollOfDevs.Entities;
+using SchollOfDevs.Exceptions;
 using SchollOfDevs.Helpers;
+using SchoolOfDevs.Services;
 using System.Reflection.Metadata.Ecma335;
 using BC = BCrypt.Net.BCrypt;
 
@@ -10,6 +12,7 @@ namespace SchollOfDevs.Services
 {
     public interface IUserService
     {
+        public Task<AuthenticateResponse> Authenticate(AuthenticateRequest request);
         public Task<UserResponse> Create(UserRequest userRequest);
         public Task<UserResponse> GetById(int id);
         public Task<List<UserResponse>> GetAll();
@@ -21,12 +24,32 @@ namespace SchollOfDevs.Services
     {
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private readonly IJwtService _jwtService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(DataContext context, IMapper mapper)
+        public UserService(DataContext context, IMapper mapper, IJwtService jwtService, IHttpContextAccessor _httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _jwtService = jwtService;
+            _httpContextAccessor = _httpContextAccessor;
         }
+
+        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest request)
+        {
+            User userDb = await _context.Users
+                .SingleOrDefaultAsync(u => u.UserName == request.UserName);
+
+            if (userDb is null)
+                throw new KeyNotFoundException($"User {request.UserName} not found");
+            else if (!BC.Verify(request.Password, userDb.Password))
+                throw new BadRequestException("Incorrect Password");
+
+            string token = _jwtService.GenerateJwtToken(userDb);
+
+            return new AuthenticateResponse(userDb, token);
+        }
+
         public async Task<UserResponse> Create(UserRequest userRequest)
         {
             if (!userRequest.Password.Equals(userRequest.ConfirmPassword))
@@ -65,8 +88,12 @@ namespace SchollOfDevs.Services
         {
             User userDb = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
 
+            UserResponse currentUser = (UserResponse)_httpContextAccessor?.HttpContext?.Items["User"];
+
             if (userDb is null)
                 throw new KeyNotFoundException($"UserName {id} not found");
+            else if (currentUser.Id != userDb.Id)
+                throw new ForbiddenException("Forbbiden");
 
             _context.Users.Remove(userDb);
             await _context.SaveChangesAsync();
@@ -104,8 +131,12 @@ namespace SchollOfDevs.Services
                 .Include(e => e.CoursesStuding)
                 .SingleOrDefaultAsync(u => u.Id == id);
 
+            UserResponse currentUser = (UserResponse)_httpContextAccessor?.HttpContext?.Items["User"];
+
             if (userDb is null)
                 throw new KeyNotFoundException($"UserName {id} not found");
+            else if (currentUser.Id != userDb.Id)
+                throw new ForbiddenException("Forbbiden");
             else if (!BC.Verify(userRequest.CurrentPassword, userDb.Password))
                 throw new BadHttpRequestException("Incorrect Password");
 

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchollOfDevs.Dto.Course;
+using SchollOfDevs.Enuns;
 using SchollOfDevs.Services;
+using SchoolOfDevs.Authorization;
 
 namespace SchollOfDevs.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CourseController : ControllerBase
@@ -15,6 +18,7 @@ namespace SchollOfDevs.Controllers
             _service = service;
         }
 
+        [Authorize(TypeUser.Teacher, TypeUser.Both)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CourseRequest course) => Ok(await _service.Create(course));
 
@@ -24,6 +28,7 @@ namespace SchollOfDevs.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id) => Ok(await _service.GetById(id));
 
+        [Authorize(TypeUser.Teacher, TypeUser.Both)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] CourseRequest courseIn, int id)
         {
@@ -31,6 +36,7 @@ namespace SchollOfDevs.Controllers
             return NoContent();
         }
 
+        [Authorize(TypeUser.Teacher, TypeUser.Both)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
